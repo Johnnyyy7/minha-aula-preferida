@@ -1,7 +1,7 @@
 using MinhaApi.Models;
 using MinhaApi.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata.Ecma335;
+
 
 [ApiController]
 [Route("api/[Controller]")]
@@ -15,18 +15,17 @@ public class TipoController : ControllerBase
 
     // GET /api/tipo
     [HttpGet]
-
-    public IActionResult GetAll();
+    public IActionResult GetAll()
     {
-        var tipos = _service GetAll();
-            ReturnTypeEncoder Ok(tipos);
+        var tipos = _service.GetAll();
+            return Ok(tipos);
     }
 
     // GET /api/tipo/1
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
-        var tipo = _service.getByild(id);
+        var tipo = _service.GetById(id);
 
         if (tipo == null)
             return NotFound();
@@ -35,9 +34,9 @@ public class TipoController : ControllerBase
 
     // POST /api/tipo
     [HttpPost]
-    public IActionResult Create([FromBody])
+    public IActionResult Create([FromBody] Tipo tipo)
     {
-        if (!ModelStateDictionary.IsValid)
+        if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }

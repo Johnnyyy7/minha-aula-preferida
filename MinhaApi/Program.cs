@@ -1,3 +1,7 @@
+using MinhaApi.Repositories;
+using MinhaApi.Services;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +9,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<
+    IProdutoRepository,
+    ProdutoRepository>();
+
+builder.Services.AddScoped<
+    ITipoRepository,
+    TipoRepository>();
+
+builder.Services.AddScoped<
+    IProdutoService,
+    ProdutoService>();
+
+builder.Services.AddScoped<
+    ITipoService,
+    TipoService>();
+
 
 var app = builder.Build();
 

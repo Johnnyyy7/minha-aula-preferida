@@ -1,3 +1,7 @@
+using MinhaApi.Models;
+using MinhaApi.Repositories;
+using MinhaApi.Services;
+
 public class ProdutoService : IProdutoService
 {
   private readonly IProdutoRepository _repo;
@@ -25,5 +29,12 @@ public class ProdutoService : IProdutoService
       p.Id = id;
       _repo.Update(p);
       return p;
+  }
+
+  public bool Delete(int id)
+  {
+        if (_repo.GetById(id) == null) return false;
+            _repo.Delete(id);
+        return true;
   }
 }

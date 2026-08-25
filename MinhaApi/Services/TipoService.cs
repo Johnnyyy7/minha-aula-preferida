@@ -1,3 +1,7 @@
+using MinhaApi.Models;
+using MinhaApi.Repositories;
+using MinhaApi.Services;
+
 public class TipoService : ITipoService
 {
     private readonly ITipoRepository _repo;
@@ -5,9 +9,10 @@ public class TipoService : ITipoService
     public TipoService(ITipoRepository repo)
         => _repo = repo;
 
-    public Enumerable<Tipo> GetAll()
-        => _repo = GetAll();
+    public IEnumerable<Tipo> GetAll()
+        => _repo.GetAll();
     
+
     public Tipo? GetById(int id)
         => _repo.GetById(id);
     
@@ -26,5 +31,12 @@ public class TipoService : ITipoService
         t.Id = id;
         _repo.Update(t);
         return t;
+    }
+
+    public bool Delete(int id)
+    {
+        if(_repo.GetById(id) == null) return false;
+            _repo.Delete(id);
+        return true;
     }
 }

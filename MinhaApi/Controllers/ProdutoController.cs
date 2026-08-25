@@ -48,10 +48,7 @@ public class ProdutoController : ControllerBase
     }
 // PUT /api/produto/1
     [HttpPut("{id}")]
-    public IActionResult Update(
-
-        int id,
-        [FromBody] Produto produto)
+    public IActionResult Update(int id, [FromBody] Produto produto)
     {
         var atualizado = _service.Update(id, produto);
 

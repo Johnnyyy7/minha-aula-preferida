@@ -1,6 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using MinhaApi.Models;
 using MinhaApi.Services;
-using Microsoft.AspNetCore.Mvc;
 
 
 [ApiController]

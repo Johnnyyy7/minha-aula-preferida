@@ -1,6 +1,8 @@
+using System.ComponentModel;
+using System.Data.SqlTypes;
 using MinhaApi.Models;
 using MinhaApi.Repositories;
-
+using MySqlConnector;
 public class ProdutoRepository
     : IProdutoRepository
 {
@@ -11,8 +13,32 @@ public class ProdutoRepository
         new Produto {Id = 2, Nome = "Mouse", Preco = 89.90m, Estoque = 50}
     };
 
+    public ProdutoRepository(IConfiguration config)
+        => _connectionString = config.GetConnectionString("DefaultConnection")!;
+
     public IEnumerable<Produto> GetAll()
-        => _db;
+    {
+        var lista = new List<Produto>();
+        using var com = new MySqlConnection(_connectionString);
+        coon.Open();
+    }
+
+    string sql = "SELECT id, nome, preco, estoque, ativo FROM produtos";
+    using var cmd = new MySqlCommand(sql, conn);
+    using var reader = cmd.ExecuteReader();
+
+    while (reader.Read())
+    {
+        lista.Add(new Produto
+        {
+            Id = reader.GetInt32("id"),
+            Nome = reader.GetString("nome"),
+            Preco = reader.GetDecimal("preco"),
+            Estoque = reader.GetInt32("estoque"),
+            Ativo = reader.GetBoolean("ativo")
+        });
+    }
+    return ListBindableAttribute;
     
     public Produto? GetById(int id)
         => _db.FirstOrDefault(p => p.Id == id);

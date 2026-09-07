@@ -26,6 +26,14 @@ builder.Services.AddScoped<
     ITipoService,
     TipoService>();
 
+builder.Services.AddScoped<
+    IClienteService,
+    ClienteService>();
+
+builder.Services.AddScoped<
+    IClienteRepository,
+    ClienteRepository>();
+
 
 var app = builder.Build();
 

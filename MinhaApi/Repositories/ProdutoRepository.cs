@@ -20,7 +20,7 @@ public class ProdutoRepository : IProdutoRepository
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = "SELECT id, nome, preco, estoque, ativo FROM produto";
+        string sql = "SELECT id, nome, preco, estoque, ativo FROM produtos";
         using var cmd = new MySqlCommand(sql, conn);
         using var reader = cmd.ExecuteReader();
 
@@ -46,7 +46,7 @@ public class ProdutoRepository : IProdutoRepository
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = @"INSERT INTO produto (nome, preco, estoque, ativo) 
+        string sql = @"INSERT INTO produtos (nome, preco, estoque, ativo) 
                     VALUES (@Nome, @Preco, @Estoque, @Ativo);
                     SELECT LAST_INSERT_ID();";
 
@@ -64,7 +64,7 @@ public class ProdutoRepository : IProdutoRepository
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
-        string sql = @"UPDATE produto
+        string sql = @"UPDATE produtos
                      SET nome = @Nome, preco = @Preco, estoque = @Estoque, ativo = @Ativo WHERE id = @Id";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Id", p.Id);
@@ -79,7 +79,7 @@ public class ProdutoRepository : IProdutoRepository
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
-        string sql = "DELETE FROM produto WHERE id = @Id";
+        string sql = "DELETE FROM produtos WHERE id = @Id";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Id", id);
         cmd.ExecuteNonQuery();

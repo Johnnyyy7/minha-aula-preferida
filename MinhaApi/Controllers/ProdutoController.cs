@@ -16,8 +16,8 @@ public class ProdutoController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        var produtos = _service.GetAll();
-        return Ok(produtos);
+        var produto = _service.GetAll();
+        return Ok(produto);
     }
 
 // GET /api/produto/1

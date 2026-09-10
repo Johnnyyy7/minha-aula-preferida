@@ -100,7 +100,7 @@ public class ClienteRepository : IClienteRepository
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
-        string sql = "UPDATE SET ativo = false WHERE id = @Id";
+        string sql = "UPDATE cliente SET ativo = false WHERE id = @Id";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Ativo", false);
         cmd.Parameters.AddWithValue("@Id", id);

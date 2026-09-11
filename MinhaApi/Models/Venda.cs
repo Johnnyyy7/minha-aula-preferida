@@ -9,4 +9,4 @@ public class Venda
 
     public int Quantidade {get; set;}
 
-}
+} // acidionar todos os atributos que colocou na tabela banco de dados

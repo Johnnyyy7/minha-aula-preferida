@@ -85,4 +85,19 @@ public class ProdutoRepository : IProdutoRepository
         cmd.ExecuteNonQuery();
     }
 
+    public void AtualizarEstoque(int id, int quantidade)
+    {
+        using var conn = new MySqlConnection(_connectionString);
+        conn.Open();
+
+        string sql = @"UPDATE produto 
+                        SET estoque = estoque - @Quantidade 
+                        WHERE id = @Id AND estoque >= @Quantidade";
+        using var cmd = new MySqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@Quantidade", quantidade);
+        cmd.Parameters.AddWithValue("@Id", id);
+
+        cmd.ExecuteNonQuery();
+    }
+
 }

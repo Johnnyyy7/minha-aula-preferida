@@ -34,6 +34,13 @@ builder.Services.AddScoped<
     IClienteRepository,
     ClienteRepository>();
 
+builder.Services.AddScoped<
+    IVendaRepository,
+    VendaRepository>();
+builder.Services.AddScoped<
+    IVendaService,
+    VendaService>();
+
 
 var app = builder.Build();
 

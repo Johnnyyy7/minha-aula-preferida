@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using MinhaApi.Models;
 using MinhaApi.Services;
 
-
 [ApiController]
 [Route("api/[controller]")]
 public class VendaController : ControllerBase
@@ -12,48 +11,47 @@ public class VendaController : ControllerBase
     public VendaController(IVendaService service)
         => _service = service;
 
-    //GET / api/produto
-    [HttpGet]
-    public IActionResult GetAll()
+    // POST /api/venda
+    [HttpPost]
+    public IActionResult Create([FromBody] Venda venda)
     {
-        var venda = _service.GetAll();
-        return Ok(venda);
-    }
+        if (venda == null)
+            return BadRequest("A venda é obrigatória.");
 
-     [HttpPost]
-    public IActionResult Create([FromBody] Produto produto)
-    {
-        if (!ModelState.IsValid)
+        try
         {
-            return BadRequest(ModelState);
+            var criada = _service.Create(venda);
+            return CreatedAtAction(nameof(GetById), new { id = criada.Id }, criada);
         }
-
-        var criado = _service.Create(produto);
-
-        return CreatedAtAction(
-            nameof(GetById),
-            new { id = criado.Id },
-            criado);
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
-        // GET /api/venda
+    // GET /api/venda
     [HttpGet]
     public IActionResult GetAll()
     {
-        var venda = _service.GetAll();
-        return Ok(venda);
+        var vendas = _service.GetAll();
+        return Ok(vendas);
     }
 
     // GET /api/venda/{id}
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public IActionResult GetById(int id)
     {
+        if (id <= 0)
+            return BadRequest("O id deve ser maior que zero.");
+
         var venda = _service.GetById(id);
         if (venda == null)
             return NotFound();
 
         return Ok(venda);
     }
-
-
 }

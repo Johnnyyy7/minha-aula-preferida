@@ -22,12 +22,12 @@ public class VendaService : IVendaService
 
         if(cliente == null)
         {
-            throw new ArgumentException("ID invalido");
+            throw new ArgumentException("Cliente não encontrado com o ID informado.");
         }
 
         if(produto == null)
         {
-            throw new ArgumentException("ID invalido");
+            throw new ArgumentException("Produto não encontrado com o ID informado.");
         }
 
         if (produto.Estoque < venda.Quantidade)

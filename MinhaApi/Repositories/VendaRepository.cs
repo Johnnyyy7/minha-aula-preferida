@@ -6,9 +6,9 @@ public class VendaRepository : IVendaRepository
 {
     private readonly string _connectionString;
 
-    public VendaRepository(string connectionString)
+    public VendaRepository(IConfiguration configuration)
     {
-        _connectionString = connectionString;
+        _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
 
     public void Add (Venda v)
@@ -17,7 +17,7 @@ public class VendaRepository : IVendaRepository
         conn.Open();
 
         string sql = @"INSERT INTO venda (id_produto, id_cliente, data_venda, valor_Unitario, quantidade, total_venda)
-                        VALUES (@Id_Prduto, @Id_Cliente, @Data_Venda, @Valor_Unitario, @Quantidade, @Total_Venda);
+                        VALUES (@Id_Produto, @Id_Cliente, @Data_Venda, @Valor_Unitario, @Quantidade, @Total_Venda);
                         SELECT LAST_INSERT_ID()";
 
         using var cmd = new MySqlCommand(sql, conn);
@@ -40,7 +40,7 @@ public class VendaRepository : IVendaRepository
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = "SELECT * FROM venda";
+        string sql = "SELECT id, id_produto, id_cliente, data_venda, valor_unitario, quantidade, total_venda from venda";
         using var cmd = new MySqlCommand(sql, conn);
         using var reader = cmd.ExecuteReader();
 
@@ -67,7 +67,7 @@ public class VendaRepository : IVendaRepository
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = "SELECT * FROM venda WHERE id = @Id";
+        string sql = "SELECT id, id_produto, id_cliente, data_venda, valor_unitario, quantidade, total_venda FROM venda WHERE id = @Id";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Id", id);
         using var reader = cmd.ExecuteReader();

@@ -42,7 +42,7 @@ public class VendaController : ControllerBase
     }
 
     // GET /api/venda/{id}
-    [HttpGet("{id:int}")]
+    [HttpGet("id")]
     public IActionResult GetById(int id)
     {
         if (id <= 0)

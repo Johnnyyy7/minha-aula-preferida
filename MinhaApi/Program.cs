@@ -37,6 +37,7 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IVendaRepository,
     VendaRepository>();
+    
 builder.Services.AddScoped<
     IVendaService,
     VendaService>();

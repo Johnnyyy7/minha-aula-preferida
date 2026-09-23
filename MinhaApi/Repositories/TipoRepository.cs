@@ -1,34 +1,91 @@
 using MinhaApi.Models;
 using MinhaApi.Repositories;
-
-public class TipoRepository
-    : ITipoRepository
+using MySqlConnector;
+public class TipoRepository : ITipoRepository
 {
-    private static List<Tipo> _db = new()
-    {
-        new Tipo { Id = 1, Nome = "Asus"},
-
-        new Tipo {Id = 2, Nome = "Mchose"}
-    };
-
     public IEnumerable<Tipo> GetAll()
-        => _db;
+    {
+        private readonly string _connectionString;
+
+        public TipoRepository(IConfiguration config)
+            => _connectionString = config.GetConnectionString("DefaultConnection")!;
+        var lista = new List<Tipo>();
+        using var conn = new MySqlConnection (_connectionString);
+        conn.Open()
+
+        string sql = "SELECT id, nome FROM tipo";
+
+        using var cmd = new MySqlConnection(sql, conn);
+        using var reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            lista.Add (new Tipo
+            {
+                Id = reader.GetInt32("id"),
+                Nome = reader.GetString("nome")
+            });
+            return lista;
+        }
+    }
     
     public Tipo? GetById(int id)
-        => _db.FirstOrDefault(t => t.Id == id);
+    {
+        using var conn = new MySqlConnection (_connectionString);
+        conn.Open()
+
+        string sql = "SELECT id, nome FROM tipo WHERE id = @Id";
+
+        using var cmd = new MySqlConnection(sql, conn);
+        cmd.Parameters.AddWithValue("Id", id);
+        using var reader = cmd.ExecuteReader();
+
+        if reader.Read()
+        {
+            return new Tipo
+            {
+                 Id = reader.GetInt32("id"),
+                 Nome = reader.GetString("nome")  
+            };
+        }
+    }
     
     public void Add(Tipo t)
     {
-        t.Id = _db.Any() ? _db.Max (x => x.Id) + 1 : 1;
-        _db.Add(t);
+        using var conn = new MySqlConnection (_connectionString);
+        conn.Open()
+
+        string sql = @"INSERT INTO tipo (id, nome)
+                    VALUES  (@Id, @Nome);
+                    SELECT LAST_INSERT_ID();";
+
+        using var cmd = new MySqlConnection(sql, conn);
+        cmd.Parameters.AddWithValue("Id", t.Id);
+        cmd.Parameters.AddWithValue("Nome", t.Nome);
+
+        var idGerado = cmd.ExecuteScalar();
+        t.Id = Convert.ToInt32(idGerado);
     }
 
     public void Update(Tipo t)
     {
-        var i = _db.FindIndex(x => x.Id == t.Id);
-        if (i >= 0) _db[i] = t;
+        using var conn = new MySqlConnection(_connectionString);
+        conn.Open();
+        string sql = @"UPDATE tipo
+                     SET nome = @Nome WHERE id = @Id";
+        using var cmd = new MySqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@Id", t.Id);
+        cmd.Parameters.AddWithValue("@Nome", t.Nome);
+        cmd.ExecuteNonQuery();
     }
 
     public void Delete(int id)
-        => _db.RemoveAll(t => t.Id == id);
+    {
+        using var conn = new MySqlConnection(_connectionString);
+        conn.Open();
+        string sql = "DELETE FROM tipo WHERE id = @Id";
+        using var cmd = new MySqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@Id", id);
+        cmd.ExecuteNonQuery();
+    }
 }

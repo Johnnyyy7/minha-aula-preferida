@@ -63,9 +63,9 @@ public class VendaService : IVendaService
     }
 
     public IEnumerable<VendaResponse> GetAll()
-        => _repo.GetAll(MapearParaDTO);
+        => _repo.GetAll().Select(MapearParaDTO);
 
-    public Venda? GetById(int id)
+    public VendaResponse? GetById(int id)
     {
         var venda = _repo.GetById(id);
         if (venda == null)
@@ -83,6 +83,12 @@ public class VendaService : IVendaService
         return new VendaResponse
         {
             Id = venda.Id,
+            NomeCliente = cliente?.Nome ?? "Cliente não encontrado",
+            NomeProduto = produto?.Nome ?? "Produto não encontrado",
+            Quantidade = venda.Quantidade,
+            Valor_Unitario = venda.Valor_Unitario,
+            Total_Venda = venda.Total_Venda,
+            Data_Venda = venda.Data_Venda
         };
     }
 }

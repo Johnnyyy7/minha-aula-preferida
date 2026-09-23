@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MinhaApi.Models;
 using MinhaApi.Services;
+using MinhaApi.DTO;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -13,14 +14,14 @@ public class VendaController : ControllerBase
 
     // POST /api/venda
     [HttpPost]
-    public IActionResult Create([FromBody] Venda venda)
+    public IActionResult Create([FromBody] VendaRequest dto)
     {
-        if (venda == null)
+        if (dto == null)
             return BadRequest("A venda é obrigatória.");
 
         try
         {
-            var criada = _service.Create(venda);
+            var criada = _service.Create(dto);
             return CreatedAtAction(nameof(GetById), new { id = criada.Id }, criada);
         }
         catch (KeyNotFoundException ex)

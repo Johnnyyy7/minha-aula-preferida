@@ -42,6 +42,14 @@ builder.Services.AddScoped<
     IVendaService,
     VendaService>();
 
+builder.Services.AddScoped<
+    IFornecedorService,
+    FornecedorService>();
+
+builder.Services.AddScoped<
+    IFornecedorRepository,
+    FornecedorRepository>();
+
 
 var app = builder.Build();
 

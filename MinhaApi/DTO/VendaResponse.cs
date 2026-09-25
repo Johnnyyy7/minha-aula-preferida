@@ -5,9 +5,10 @@ public class VendaResponse()
     public int Id {get; set;}
 
     public string NomeCliente {get; set;}
+        = string.Empty;
 
     public string NomeProduto {get; set;}
-
+        = string.Empty;
     public int Quantidade {get; set;}
     public DateTime Data_Venda {get; set;}
     public decimal Valor_Unitario {get; set;}

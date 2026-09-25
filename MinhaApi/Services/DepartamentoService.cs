@@ -5,7 +5,7 @@ using MinhaApi.Services;
 public class DepartamentoService : IDepartamentoService
 {
   private readonly IDepartamentoRepository _repo;
-  //private readonly IFornecedorRepository _repoFornecedor;
+  
 
   public DepartamentoService(IDepartamentoRepository repo)
     {
@@ -37,10 +37,9 @@ public class DepartamentoService : IDepartamentoService
       return d;
   }
 
-  public bool Delete(int id)
+  public bool Delete(int id, Fornecedor f)
   {
-       // if (_repoFornecedor.GetById() )
-        if (_repo.GetById(id) == null) return false;
+        if (_repo.GetById(id) == null && f.Ativo == false) return false;
             _repo.Delete(id);
         return true;
   }

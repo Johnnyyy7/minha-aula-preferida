@@ -8,5 +8,6 @@ public interface IDepartamentoService
     Departamento? GetById(int id);
     Departamento? Create(Departamento departamento);
     Departamento? Update(int id, Departamento departamento);
-    bool Delete(int id);
+    bool Delete(int id, Fornecedor f);
+
 }

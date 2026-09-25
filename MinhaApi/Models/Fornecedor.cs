@@ -12,7 +12,8 @@ public class Fornecedor
     public string Cnpj {get; set;}
         = string.Empty;
     
-    public int Telefone {get; set;}
+    public string Telefone {get; set;}
+        = string.Empty;
 
     public bool Ativo {get; set;}
         = true;

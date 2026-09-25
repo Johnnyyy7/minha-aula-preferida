@@ -26,7 +26,7 @@ public class FornecedorRepository : IFornecedorRepository
                 Nome = reader.GetString("nome"),
                 Email = reader.GetString("email"),
                 Cnpj = reader.GetString("cnpj"),
-                Telefone = reader.GetInt32("telefone"),
+                Telefone = reader.GetString("telefone"),
                 Ativo = reader.GetBoolean("ativo")
             });
         }
@@ -51,7 +51,7 @@ public class FornecedorRepository : IFornecedorRepository
                 Nome = reader.GetString("nome"),
                 Email = reader.GetString("email"),
                 Cnpj = reader.GetString("cnpj"),
-                Telefone = reader.GetInt32("telefone"),
+                Telefone = reader.GetString("telefone"),
                 Ativo = reader.GetBoolean("ativo")
             };
         }

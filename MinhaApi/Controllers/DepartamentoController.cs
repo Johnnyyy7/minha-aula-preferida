@@ -60,9 +60,9 @@ public class DepartamentoController : ControllerBase
 
 // DELETE /api/produto/1
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult Delete(int id, Fornecedor f)
     {
-        var deletado = _service.Delete(id);
+        var deletado = _service.Delete(id, f);
 
         if (!deletado)
             return NotFound();

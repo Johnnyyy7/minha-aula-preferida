@@ -6,9 +6,9 @@ public class VendaRepository : IVendaRepository
 {
     private readonly string _connectionString;
 
-    public VendaRepository(IConfiguration configuration)
+    public VendaRepository(IConfiguration config)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection");
+        _connectionString = config.GetConnectionString("DefaultConnection")!;
     }
 
     public void Add (Venda v)

@@ -16,41 +16,41 @@ public class DepartamentoController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        var fornecedor = _service.GetAll();
-        return Ok(fornecedor);
+        var departamento = _service.GetAll();
+        return Ok(departamento);
     }
 
 // GET /api/produto/1
     [HttpGet("id")]
     public IActionResult GetById(int id)
     {
-        var fornecedor = _service.GetById(id);
-        if (fornecedor == null)
+        var departamento = _service.GetById(id);
+        if (departamento == null)
             return NotFound();
-        return Ok(fornecedor);
+        return Ok(departamento);
     }
 
 // POST /api/produto
     [HttpPost]
-    public IActionResult Create([FromBody] Fornecedor fornecedor)
+    public IActionResult Create([FromBody] Departamento departamento)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var criado = _service.Create(fornecedor);
+        var criado = _service.Create(departamento);
 
         return CreatedAtAction(
             nameof(GetById),
-            new { id = fornecedor.Id },
+            new { id = departamento.Id },
             criado);
     }
 // PUT /api/produto/1
     [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] Fornecedor fornecedor)
+    public IActionResult Update(int id, [FromBody] Departamento departamento)
     {
-        var atualizado = _service.Update(id, fornecedor);
+        var atualizado = _service.Update(id, departamento);
 
         if (atualizado == null)
             return NotFound();

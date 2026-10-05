@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { produtoService } from '../services/produtoService'
+import { produtoService } from '../services/ProdutoService'
 
 interface Props {
   onProdutoCriado: () => void
@@ -9,7 +9,7 @@ function ProdutoForm({ onProdutoCriado }: Props) {
   const [nome,    setNome]    = useState('')
   const [preco,   setPreco]   = useState('')
   const [estoque,   setEstoque]   = useState('')
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [erro,    setErro]    = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {

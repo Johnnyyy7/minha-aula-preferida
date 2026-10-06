@@ -1,0 +1,168 @@
+/* src/pages/ProdutoPage.css */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+
+.pagina {
+  --azul: #1b3a57;
+  --borda: #d5dde6;
+  min-height: 100vh;
+  padding: 32px 16px;
+  box-sizing: border-box;
+  background: #eaf0f6;
+  color: #1f2933;
+  font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  text-align: left;
+}
+
+.pagina *,
+.pagina *::before,
+.pagina *::after {
+  box-sizing: border-box;
+}
+
+.painel {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f4f8fc;
+  border: 2px solid var(--azul);
+  border-radius: 14px;
+}
+
+.pagina-titulo {
+  margin: 0 0 16px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--azul);
+}
+
+.card {
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+}
+
+.card:last-child {
+  margin-bottom: 0;
+}
+
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #3d4852;
+}
+
+/* Formulário (componente ProdutoForm) */
+.card form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.card form h2 {
+  flex-basis: 100%;
+  margin-bottom: 2px;
+}
+
+.card form > p {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.card form > div {
+  display: flex;
+  flex: 1 1 160px;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card form > div:first-of-type {
+  flex: 2 1 220px;
+}
+
+.card label {
+  font-size: 0.8rem;
+  color: #5b6672;
+}
+
+.card input {
+  width: 100%;
+  padding: 9px 12px;
+  font: inherit;
+  font-size: 0.9rem;
+  color: #1f2933;
+  background: #f7f8fa;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+}
+
+.card input:focus-visible,
+.card button:focus-visible {
+  outline: 2px solid var(--azul);
+  outline-offset: 2px;
+}
+
+.card button {
+  padding: 9px 20px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--azul);
+  border: 1px solid var(--azul);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.card button:hover:not(:disabled) {
+  background: #14304a;
+}
+
+.card button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Lista (componente ProdutoList) */
+.card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card li {
+  padding: 9px 0;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #e8edf2;
+}
+
+.card li:last-child {
+  border-bottom: none;
+}
+
+.card section p,
+.card > p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #5b6672;
+}
+
+.mensagem-erro {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  color: #a32424;
+  background: #fdecec;
+  border-radius: 6px;
+}
+
+@media (max-width: 560px) {
+  .card form > div,
+  .card form > div:first-of-type {
+    flex-basis: 100%;
+  }
+}

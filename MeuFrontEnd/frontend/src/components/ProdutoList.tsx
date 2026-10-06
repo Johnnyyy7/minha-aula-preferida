@@ -1,4 +1,4 @@
-import { Produto } from '../types/Produto'
+import { type Produto } from '../types/Produto'
 
 // Dados que o componente PAI precisa fornecer
 interface Props {

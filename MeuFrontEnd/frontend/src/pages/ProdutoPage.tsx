@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import ProdutoForm from '../components/ProdutoForm'
 import ProdutoList from '../components/ProdutoList'
-import { produtoService } from '../services/produtoService'
+import { ProdutoService } from '../services/produtoService'
 import { type Produto } from '../types/Produto'
 import './ProdutoPage.css'
 
@@ -15,7 +15,7 @@ function ProdutoPage() {
     try {
       setLoading(true)
       setErro(null)
-      const lista = await produtoService.listar()
+      const lista = await ProdutoService.listar()
       setProdutos(lista)
     } catch {
       setErro(

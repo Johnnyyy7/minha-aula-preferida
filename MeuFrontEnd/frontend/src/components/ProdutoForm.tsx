@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { produtoService } from '../services/produtoService'
+import { ProdutoService } from '../services/produtoService'
 
 interface Props {
   onProdutoCriado: () => void
@@ -17,7 +17,7 @@ function ProdutoForm({ onProdutoCriado }: Props) {
     setErro(null)
     try {
       setLoading(true)
-      await produtoService.criar({
+      await ProdutoService.criar({
         nome,
         preco: Number(preco),
         estoque: Number(estoque),

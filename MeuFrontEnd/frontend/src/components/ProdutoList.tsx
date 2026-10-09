@@ -16,7 +16,7 @@ function ProdutoList({ produtos, loading }: Props) {
 
   return (
     <ul>
-      {produtos.map(p => (
+      {produtos?.map(p => (
         <li key={p.id}>
           <strong>{p.nome}</strong>
           {' — '}

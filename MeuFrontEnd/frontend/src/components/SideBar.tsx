@@ -35,6 +35,7 @@ function Sidebar() {
       </div>
       <NavLink to="/produtos" style={getLinkStyle}>📦 Produtos</NavLink>
       <NavLink to="/clientes" style={getLinkStyle}>👤 Clientes</NavLink>
+      <NavLink to="/vendas" style={getLinkStyle}>👤 Vendas</NavLink>
     </nav>
   )
 }

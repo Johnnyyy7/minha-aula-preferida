@@ -3,8 +3,8 @@ import { type Venda, type NovaVenda } from '../types/Venda'
 
 export const VendaService = {
 
-  criar: async (p: NovaVenda): Promise<Venda> => {
-    const { data } = await api.post('/venda', p)
+  criar: async (v: NovaVenda): Promise<Venda> => {
+    const { data } = await api.post('/venda', v)
     return data
   },
 

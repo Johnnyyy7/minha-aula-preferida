@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ProdutoService } from '../services/ProdutoService'
+import { ProdutoService } from '../services/produtoService'
 
 interface Props {
   onProdutoCriado: () => void

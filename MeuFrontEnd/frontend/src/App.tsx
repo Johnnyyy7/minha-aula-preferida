@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Sidebar from './components/SideBar'
 import ProdutoPage from './pages/ProdutoPage'
 import ClientePage from './pages/ClientePage'
+import VendaPage from './pages/VendaPage'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Route path="/" element={<Navigate to="/produtos" replace />} />
             <Route path="/produtos" element={<ProdutoPage />} />
             <Route path="/clientes" element={<ClientePage />} />
+            <Route path="/vendas" element={<VendaPage />} />
           </Routes>
         </main>
       </div>

@@ -1,0 +1,32 @@
+/* src/pages/VendaPage.css
+   Ajustes da página de vendas. Depende do ProdutoPage.css (estilos base). */
+
+/* Cliente e Produto ocupam mais espaço que a Quantidade */
+.card.card-vendas form > div:nth-of-type(-n + 2) {
+  flex: 2 1 200px;
+}
+
+/* Histórico de vendas */
+.card li.venda-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+
+.venda-detalhes {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.venda-detalhes span {
+  font-size: 0.8rem;
+  color: #5b6672;
+}
+
+.venda-total {
+  font-weight: 700;
+  color: var(--azul);
+}

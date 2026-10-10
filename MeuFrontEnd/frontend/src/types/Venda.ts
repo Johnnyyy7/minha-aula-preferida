@@ -1,12 +1,20 @@
+// src/types/Venda.ts
+// Os nomes devem ser IDÊNTICOS ao JSON que a API devolve (GET /api/venda)
+
+// O que a API DEVOLVE
 export interface Venda {
   id: number
-  id_Produto: number
-  id_Cliente: number
-  data_venda: Date
-  valor_Unitario: number
+  nomeCliente: string
+  nomeProduto: string
   quantidade: number
+  data_Venda: string
+  valor_Unitario: number
   total_Venda: number
 }
 
-// Tipo para criação — sem o id (gerado pela MinhaAPI)
-export type NovaVenda = Omit<Venda,'id' | 'valor_Unitario' | 'total_Venda' | 'data_venda'>
+// O que a gente ENVIA para criar uma venda (o resto a API calcula)
+export interface NovaVenda {
+  id_Cliente: number
+  id_Produto: number
+  quantidade: number
+}

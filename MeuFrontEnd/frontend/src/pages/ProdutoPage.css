@@ -1,6 +1,6 @@
-/* src/pages/ProdutoPage.css */
+/* src/pages/ProdutoPage.css
+   Estilos base compartilhados com a ClientePage (painel, cards, campos, botões). */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
-
 
 .pagina {
   --azul: #1b3a57;
@@ -55,7 +55,7 @@
   color: #3d4852;
 }
 
-/* Formulário (componente ProdutoForm) */
+/* Formulário */
 .card form {
   display: flex;
   flex-wrap: wrap;
@@ -75,13 +75,19 @@
 
 .card form > div {
   display: flex;
-  flex: 1 1 160px;
+  flex: 1 1 140px;
   flex-direction: column;
   gap: 4px;
 }
 
 .card form > div:first-of-type {
-  flex: 2 1 220px;
+  flex: 2 1 200px;
+}
+
+.card form > div.form-acoes {
+  flex: 0 0 auto;
+  flex-direction: row;
+  gap: 8px;
 }
 
 .card label {
@@ -106,7 +112,7 @@
   outline-offset: 2px;
 }
 
-.card button {
+.card form button {
   padding: 9px 20px;
   font: inherit;
   font-size: 0.9rem;
@@ -118,8 +124,17 @@
   cursor: pointer;
 }
 
-.card button:hover:not(:disabled) {
+.card form button:hover:not(:disabled) {
   background: #14304a;
+}
+
+.card form button.botao-secundario {
+  color: var(--azul);
+  background: #fff;
+}
+
+.card form button.botao-secundario:hover:not(:disabled) {
+  background: #eef4fa;
 }
 
 .card button:disabled {
@@ -127,7 +142,7 @@
   cursor: not-allowed;
 }
 
-/* Lista (componente ProdutoList) */
+/* Lista */
 .card ul {
   margin: 0;
   padding: 0;
@@ -144,6 +159,82 @@
   border-bottom: none;
 }
 
+.card li.produto-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.card li.em-edicao {
+  padding-right: 8px;
+  padding-left: 8px;
+  background: #eef4fa;
+  border-radius: 6px;
+}
+
+.produto-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+}
+
+.produto-preco {
+  font-weight: 700;
+  color: var(--azul);
+}
+
+.estoque {
+  padding: 2px 10px;
+  font-size: 0.78rem;
+  color: var(--azul);
+  background: #e3eef9;
+  border-radius: 999px;
+}
+
+.estoque.baixo {
+  color: #7a5200;
+  background: #fff1cc;
+}
+
+.estoque.zerado {
+  color: #a32424;
+  background: #fdecec;
+}
+
+.produto-acoes {
+  display: flex;
+  gap: 6px;
+}
+
+.card .btn-acao {
+  padding: 5px 12px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--azul);
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.card .btn-acao:hover:not(:disabled) {
+  background: #eef4fa;
+}
+
+.card .btn-excluir {
+  color: #a32424;
+  border-color: #efc4c4;
+}
+
+.card .btn-excluir:hover:not(:disabled) {
+  background: #fdecec;
+}
+
+/* Mensagens */
 .card section p,
 .card > p {
   margin: 0;
@@ -151,13 +242,22 @@
   color: #5b6672;
 }
 
-.mensagem-erro {
+.mensagem-erro,
+.mensagem-sucesso {
   margin: 0 0 12px;
   padding: 10px 12px;
   font-size: 0.88rem;
+  border-radius: 6px;
+}
+
+.mensagem-erro {
   color: #a32424;
   background: #fdecec;
-  border-radius: 6px;
+}
+
+.mensagem-sucesso {
+  color: #1d6b3a;
+  background: #e8f6ed;
 }
 
 @media (max-width: 560px) {
@@ -165,4 +265,25 @@
   .card form > div:first-of-type {
     flex-basis: 100%;
   }
+
+  .card form > div.form-acoes {
+    flex-basis: 100%;
+  }
+}
+
+/* Campos de seleção (VendaForm) — mesmo visual dos inputs */
+.card select {
+  width: 100%;
+  padding: 9px 12px;
+  font: inherit;
+  font-size: 0.9rem;
+  color: #1f2933;
+  background: #f7f8fa;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+}
+
+.card select:focus-visible {
+  outline: 2px solid var(--azul);
+  outline-offset: 2px;
 }

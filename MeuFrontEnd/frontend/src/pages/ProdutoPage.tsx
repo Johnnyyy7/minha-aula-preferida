@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import ProdutoForm from '../components/ProdutoForm'
 import ProdutoList from '../components/ProdutoList'
-import { ProdutoService } from '../services/ProdutoService'
+import { ProdutoService } from '../services/produtoService'
 import { type Produto } from '../types/Produto'
 import './ProdutoPage.css'
 

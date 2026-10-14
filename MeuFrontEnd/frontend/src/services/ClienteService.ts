@@ -9,5 +9,13 @@ export const clienteService = {
   criar: async (c: NovoCliente): Promise<Cliente> => {
     const { data } = await api.post('/cliente', c)
     return data
+  },
+
+  atualizar: async (id: number, p: NovoCliente): Promise<void> => {
+    await api.put(`/cliente/${id}`, {id, ...p})
+  },
+  
+  excluir: async (id: number): Promise<void> => {
+    await api.delete(`/cliente/${id}`)
   }
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { VendaService } from '../services/VendaService'
-import { ProdutoService } from '../services/produtoService'
+import { ProdutoService } from '../services/ProdutoService'
 import { clienteService } from '../services/ClienteService'
 import { type Produto } from '../types/Produto'
 import { type Cliente } from '../types/Cliente'

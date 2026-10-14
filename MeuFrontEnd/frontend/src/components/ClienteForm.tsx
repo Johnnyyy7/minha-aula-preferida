@@ -1,8 +1,14 @@
 import { useState } from 'react'
 import { clienteService } from '../services/ClienteService'
+import { type Cliente } from '../types/Cliente'
 
 
-interface Props { onClienteCriado: () => void }
+interface Props 
+{ 
+  onClienteCriado: () => void
+  clienteEmEdicao: Cliente | null 
+  onCancelarEdicao: () => void
+}
 
 function ClienteForm({ onClienteCriado }: Props) {
   const [nome, setNome] = useState('')

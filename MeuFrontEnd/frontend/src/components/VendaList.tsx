@@ -22,7 +22,7 @@ function VendaList({ vendas, loading }: Props) {
           <div className="venda-detalhes">
             <strong>{v.nomeCliente}</strong>
             <span>
-              {v.nomeProduto} · Qtd: {v.quantidade}
+                  {v.nomeProduto} · {v.quantidade} x R$ {v.valor_Unitario.toFixed(2)}
             </span>
             <span>{new Date(v.data_Venda).toLocaleDateString('pt-BR')}</span>
           </div>

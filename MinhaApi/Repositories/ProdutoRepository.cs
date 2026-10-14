@@ -39,7 +39,27 @@ public class ProdutoRepository : IProdutoRepository
      }
     
     public Produto? GetById(int id)
-        => _db.FirstOrDefault(p => p.Id == id);
+    {
+        using var conn = new MySqlConnection(_connectionString);
+        conn.Open();
+
+        string sql = "SELECT id, nome, preco, estoque, ativo FROM produto WHERE id = @Id";
+        using var cmd = new MySqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@Id", id);
+        using var reader = cmd.ExecuteReader();
+
+        if (!reader.Read())
+        return null;
+
+        return new Produto
+        {
+            Id = reader.GetInt32("id"),
+            Nome = reader.GetString("nome"),
+            Preco = reader.GetDecimal("preco"),
+            Estoque = reader.GetInt32("estoque"),
+            Ativo = reader.GetBoolean("ativo")
+        };
+    }
 
     public void Add(Produto p) 
     {

@@ -42,7 +42,7 @@ public class VendaService : IVendaService
             Id_Cliente = dto.Id_Cliente,
             Id_Produto = dto.Id_Produto,
             Quantidade = dto.Quantidade,
-            Valor_Unitario = dto.Preco,
+            Valor_Unitario = produto.Preco,
             Total_Venda = produto.Preco * dto.Quantidade,
             Data_Venda = DateTime.Now
         };

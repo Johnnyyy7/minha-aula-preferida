@@ -1,6 +1,8 @@
 using MinhaApi.Repositories;
 using MinhaApi.Services;
-
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,16 +17,8 @@ builder.Services.AddScoped<
     ProdutoRepository>();
 
 builder.Services.AddScoped<
-    ITipoRepository,
-    TipoRepository>();
-
-builder.Services.AddScoped<
     IProdutoService,
     ProdutoService>();
-
-builder.Services.AddScoped<
-    ITipoService,
-    TipoService>();
 
 builder.Services.AddScoped<
     IClienteService,
@@ -66,17 +60,37 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
+var jwtKey = builder.Configuration["Jwt:Key"]!;
 
-var app = builder.Build();
+builder.Services
+  .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+  .AddJwtBearer(opt => {
+    opt.TokenValidationParameters = new TokenValidationParameters {
+      ValidateIssuerSigningKey = true,
+      IssuerSigningKey = new SymmetricSecurityKey(
+          Encoding.UTF8.GetBytes(jwtKey)),
+      ValidateIssuer   = true,
+      ValidIssuer      = builder.Configuration["Jwt:Issuer"],
+      ValidateAudience = true,
+      ValidAudience    = builder.Configuration["Jwt:Audience"],
+      ValidateLifetime = true
+    };
+  });
 
-app.UseCors("Frontend");
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+    builder.Services.AddScoped<IAuthService, AuthService>();
 
+  var app = builder.Build();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+app.UseCors("Frontend");   // 1º CORS
+app.UseAuthentication();   // 2º quem é você?
+app.UseAuthorization();    // 3º você pode entrar?
 app.MapControllers();
 
 app.Run();

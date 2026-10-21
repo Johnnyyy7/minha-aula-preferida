@@ -1,0 +1,61 @@
+create database if not exists minha_api_db;
+use minha_api_db;
+
+create table if not exists produto
+(
+	id int auto_increment primary key,
+    nome varchar(100) not null,
+    preco decimal(10, 2) not null,
+    estoque int not null default 0,
+    ativo tinyint(1) not null default 1
+);
+
+create table if not exists cliente
+(
+	id int auto_increment primary key,
+    nome varchar(100) not null,
+    email varchar(100) not null,
+    cpf varchar(11) not null,
+    ativo tinyint(1) not null default 1
+);
+
+create table if not exists venda
+(
+	id int auto_increment primary key,
+    id_produto int,
+    id_cliente int,
+    data_venda date not null,
+    valor_Unitario decimal(10, 2) not null,
+    quantidade int,
+    total_venda decimal(10, 2),
+    FOREIGN KEY (id_produto) REFERENCES produto(id),
+	FOREIGN KEY (id_cliente) REFERENCES cliente(id)
+);
+create table if not exists funcionario(
+id int auto_increment primary key,
+nome varchar(100) not null,
+cargo varchar(50) not null
+);
+create table if not exists departamento(
+id int auto_increment primary key,
+nome varchar (100) not null,
+descricao varchar (100),
+ativo tinyint(1)not null,
+idFuncionario int,
+FOREIGN KEY (idFuncionario) REFERENCES funcionario(id)
+);
+
+CREATE TABLE IF NOT EXISTS usuario (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    nome       VARCHAR(100) NOT NULL,
+    email      VARCHAR(150) NOT NULL UNIQUE,
+    senha_hash VARCHAR(255) NOT NULL,
+    ativo      TINYINT(1)   NOT NULL DEFAULT 1
+);
+
+
+INSERT INTO usuario (nome, email, senha_hash)
+VALUES ('Admin SENAI', 'admin@senai.com',
+        '$2a$11$huplLzO0NkAvetzaoCwbdOcAjgRh12CCK19vYS4sXTeZU5S5T5zBO');
+
+select * from usuario;

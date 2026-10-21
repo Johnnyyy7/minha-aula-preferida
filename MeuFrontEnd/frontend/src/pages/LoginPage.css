@@ -1,0 +1,108 @@
+/* src/pages/LoginPage.css */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+.login-pagina {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  background: #eaf0f6;
+  font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  text-align: left;
+}
+
+.login-pagina *,
+.login-pagina *::before,
+.login-pagina *::after {
+  box-sizing: border-box;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 32px 28px;
+  background: #fff;
+  border: 2px solid #1a3d5c;
+  border-top: 8px solid #c8d400;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(26, 61, 92, 0.12);
+}
+
+.login-titulo {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a3d5c;
+}
+
+.login-subtitulo {
+  margin: 0 0 20px;
+  font-size: 0.9rem;
+  color: #5b6672;
+}
+
+.login-erro {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  color: #a32424;
+  background: #fdecec;
+  border-radius: 6px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form label {
+  margin: 14px 0 4px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #3d4852;
+}
+
+.login-form label:first-of-type {
+  margin-top: 0;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 0.95rem;
+  color: #1f2933;
+  background: #f7f8fa;
+  border: 1px solid #d5dde6;
+  border-radius: 6px;
+}
+
+.login-form input:focus-visible,
+.login-form button:focus-visible {
+  outline: 2px solid #1a3d5c;
+  outline-offset: 2px;
+}
+
+.login-form button {
+  margin-top: 22px;
+  padding: 11px 16px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  background: #1a3d5c;
+  border: 1px solid #1a3d5c;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.login-form button:hover:not(:disabled) {
+  background: #14304a;
+}
+
+.login-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

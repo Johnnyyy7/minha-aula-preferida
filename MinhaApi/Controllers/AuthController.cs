@@ -22,5 +22,19 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = ex.Message }); // 401
         }
     }
+
+    [HttpPost("register")]
+    public IActionResult Register([FromBody] RegisterRequest request)
+    {
+        try
+        {
+            _authService.Register(request);
+            return Ok(new { message = "Usuário registrado com sucesso." }); // 200
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message }); // 400
+        }
+    } 
 }
 

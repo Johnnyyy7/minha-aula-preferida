@@ -68,4 +68,20 @@ public class AuthService : IAuthService
         // 6. Converte para a string "xxx.yyy.zzz"
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+    public void Register(RegisterRequest request)
+    {
+        var usuarioExistente = _repo.BuscarPorEmail(request.Email);
+        if (usuarioExistente != null)
+            throw new InvalidOperationException("Usuário já existe.");
+        
+        var usuario = new Usuario
+        {
+            Nome = request.Nome,
+            Email = request.Email,
+            SenhaHash = BCrypt.Net.BCrypt.HashPassword(request.Senha),
+            Ativo = true
+        };
+        _repo.Add(usuario);
+    }
 } // fim da classe AuthService

@@ -93,6 +93,7 @@ app.UseAuthentication();   // 2º quem é você?
 app.UseAuthorization();    // 3º você pode entrar?
 app.MapControllers();
 
+
 app.Run();
 
 

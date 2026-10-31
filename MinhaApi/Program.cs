@@ -52,6 +52,14 @@ builder.Services.AddScoped<
     IDepartamentoRepository,
     DepartamentoRepository>();
 
+builder.Services.AddScoped<
+    IDashboardRepository,
+    DashboardRepository>();
+    
+builder.Services.AddScoped<
+    IDashboardService,
+    DashboardService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>

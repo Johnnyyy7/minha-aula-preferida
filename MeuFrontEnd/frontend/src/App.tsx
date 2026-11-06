@@ -17,7 +17,10 @@ function Layout() {
       <main style={{ flex: 1, padding: 0, minWidth: 0 }}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<Navigate to="/produtos" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute><DashboardPage /></ProtectedRoute>
+          } />
           <Route path="/produtos" element={
             <ProtectedRoute><ProdutoPage /></ProtectedRoute>
           } />
@@ -26,10 +29,6 @@ function Layout() {
           } />
           <Route path="/vendas" element={
             <ProtectedRoute><VendaPage /></ProtectedRoute>
-          } />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={
-            <ProtectedRoute><DashboardPage /></ProtectedRoute>
           } />
         </Routes>
       </main>
@@ -47,4 +46,3 @@ function App() {
   )
 }
 export default App
-  

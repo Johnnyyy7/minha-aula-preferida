@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using MinhaApi.Models;
 using MinhaApi.Services;
+using Microsoft.AspNetCore.Authorization;
 
-
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ProdutoController : ControllerBase
@@ -21,7 +22,7 @@ public class ProdutoController : ControllerBase
     }
 
 // GET /api/produto/1
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
         var produto = _service.GetById(id);

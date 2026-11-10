@@ -60,6 +60,10 @@ builder.Services.AddScoped<
     IDashboardService,
     DashboardService>();
 
+builder.Services.AddScoped<
+    IFotoService,
+    FotoService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>

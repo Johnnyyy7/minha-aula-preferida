@@ -21,6 +21,29 @@ export const ProdutoService = {
   
   excluir: async (id: number): Promise<void> => {
     await api.delete(`/produto/${id}`)
-  }
+  },
+
+  // Adicionar ao objeto produtoService existente:
+
+uploadFoto: async (id: number, arquivo: File): Promise<string> => {
+  const formData = new FormData()
+  formData.append('arquivo', arquivo) // nome = parâmetro do Controller
+
+  const { data } = await api.post(
+    `/produtos/${id}/foto`,
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } }
+  )
+  return data.fotoBase64  // ← data URL retornada pelo backend
+},
+
+removerFoto: async (id: number): Promise<void> => {
+  await api.delete(`/produtos/${id}/foto`)
+},
+
+buscarPorId: async (id: number): Promise<Produto> => {
+  const { data } = await api.get('/produto/' + id)
+  return data
+},
 
 }

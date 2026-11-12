@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { ProdutoService } from '../services/ProdutoService'
 import { type Produto } from '../types/Produto'
+import FotoUpload from '../components/produtos/FotoUpload'
+import { useParams } from 'react-router-dom'
 
 interface Props {
   onProdutoCriado: () => void           // chamado depois de cadastrar OU salvar a edição
@@ -9,12 +11,14 @@ interface Props {
 }
 
 function ProdutoForm({ onProdutoCriado, produtoEmEdicao, onCancelarEdicao }: Props) {
+  const { id } = useParams()
+  const modoEdicao = !!id
   const [nome, setNome] = useState('')
   const [preco, setPreco] = useState('')
   const [estoque, setEstoque] = useState('')
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
-
+  const [fotoBase64Atual, setFotoBase64Atual] = useState<string | null>(null) // ✨ novo estado
   // Quando clica em "Editar", preenche o formulário com os dados do produto.
   // Quando cancela (ou termina), limpa os campos.
   useEffect(() => {
@@ -29,6 +33,16 @@ function ProdutoForm({ onProdutoCriado, produtoEmEdicao, onCancelarEdicao }: Pro
     }
     setErro(null)
   }, [produtoEmEdicao])
+
+  async function carregarProduto() {
+  if (!id) return
+  const produto = await ProdutoService.buscarPorId(Number(id))
+  setNome(produto.nome)
+  setPreco(String(produto.preco))
+  setEstoque(String(produto.estoque))
+  // ✨ Guardar a data URL que veio da API:
+  setFotoBase64Atual(produto.fotoBase64 ?? null)
+}
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -109,6 +123,12 @@ function ProdutoForm({ onProdutoCriado, produtoEmEdicao, onCancelarEdicao }: Pro
       <div className="form-acoes">
         <button type="submit" disabled={loading}>
           {loading ? 'Salvando...' : produtoEmEdicao ? 'Salvar alterações' : 'Cadastrar'}
+          {modoEdicao && (
+          <FotoUpload produtoId={Number(id)}
+          fotoBase64Atual={fotoBase64Atual}
+          onAtualizar={carregarProduto}
+        />
+    )}
         </button>
         {produtoEmEdicao && (
           <button type="button" className="botao-secundario" onClick={onCancelarEdicao}>

@@ -5,17 +5,11 @@ public class ProdutoRepository : IProdutoRepository
 {
     private readonly string _connectionString;
 
-      public ProdutoRepository(IConfiguration config) 
-      => _connectionString = config.GetConnectionString("DefaultConnection")!;
-    private static List<Produto> _db = new()
+    public ProdutoRepository(IConfiguration config)
+        => _connectionString = config.GetConnectionString("DefaultConnection")!;
+
+    public IEnumerable<Produto> GetAll()
     {
-        new Produto { Id = 1, Nome = "Notebook", Preco = 2500m, Estoque = 10},
-
-        new Produto {Id = 2, Nome = "Mouse", Preco = 89.90m, Estoque = 50}
-    };
-
-     public IEnumerable<Produto> GetAll() 
-     {
         var lista = new List<Produto>();
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
@@ -24,21 +18,22 @@ public class ProdutoRepository : IProdutoRepository
         using var cmd = new MySqlCommand(sql, conn);
         using var reader = cmd.ExecuteReader();
 
-        while (reader.Read()) 
+        while (reader.Read())
         {
-            lista.Add(new Produto 
+            lista.Add(new Produto
             {
                 Id = reader.GetInt32("id"),
                 Nome = reader.GetString("nome"),
                 Preco = reader.GetDecimal("preco"),
                 Estoque = reader.GetInt32("estoque"),
                 Ativo = reader.GetBoolean("ativo"),
-                Foto = reader.IsDBNull("foto") ? null : reader.GetString("foto")
+                // a coluna foto pode ser NULL
+                Foto = reader.IsDBNull(reader.GetOrdinal("foto")) ? null : reader.GetString("foto")
             });
         }
         return lista;
-     }
-    
+    }
+
     public Produto? GetById(int id)
     {
         using var conn = new MySqlConnection(_connectionString);
@@ -50,7 +45,7 @@ public class ProdutoRepository : IProdutoRepository
         using var reader = cmd.ExecuteReader();
 
         if (!reader.Read())
-        return null;
+            return null;
 
         return new Produto
         {
@@ -59,17 +54,17 @@ public class ProdutoRepository : IProdutoRepository
             Preco = reader.GetDecimal("preco"),
             Estoque = reader.GetInt32("estoque"),
             Ativo = reader.GetBoolean("ativo"),
-            Foto = r["foto"] == DBNull.Value ? null : r["foto"].ToString()
+            Foto = reader.IsDBNull(reader.GetOrdinal("foto")) ? null : reader.GetString("foto")
         };
     }
 
-    public void Add(Produto p) 
+    public void Add(Produto p)
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = @"INSERT INTO produto (nome, preco, estoque, ativo, foto) 
-                    VALUES (@Nome, @Preco, @Estoque, @Ativo, @Foto);
+        string sql = @"INSERT INTO produto (nome, preco, estoque, ativo)
+                    VALUES (@Nome, @Preco, @Estoque, @Ativo);
                     SELECT LAST_INSERT_ID();";
 
         using var cmd = new MySqlCommand(sql, conn);
@@ -77,25 +72,24 @@ public class ProdutoRepository : IProdutoRepository
         cmd.Parameters.AddWithValue("@Preco", p.Preco);
         cmd.Parameters.AddWithValue("@Estoque", p.Estoque);
         cmd.Parameters.AddWithValue("@Ativo", p.Ativo);
-        cmd.Parameters.AddWithValue("@Foto", (object?)p.Foto ?? DBNull.Value);
 
         var idGerado = cmd.ExecuteScalar();
         p.Id = Convert.ToInt32(idGerado);
     }
 
+    // O Update NÃO mexe na coluna foto (a foto tem rotas próprias)
     public void Update(Produto p)
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
         string sql = @"UPDATE produto
-                     SET nome = @Nome, preco = @Preco, estoque = @Estoque, ativo = @Ativo, foto = @Foto WHERE id = @Id";
+                     SET nome = @Nome, preco = @Preco, estoque = @Estoque, ativo = @Ativo WHERE id = @Id";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Id", p.Id);
         cmd.Parameters.AddWithValue("@Nome", p.Nome);
         cmd.Parameters.AddWithValue("@Preco", p.Preco);
         cmd.Parameters.AddWithValue("@Estoque", p.Estoque);
         cmd.Parameters.AddWithValue("@Ativo", p.Ativo);
-        cmd.Parameters.AddWithValue("@Foto", (object?)p.Foto ?? DBNull.Value);
         cmd.ExecuteNonQuery();
     }
 
@@ -114,8 +108,8 @@ public class ProdutoRepository : IProdutoRepository
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = @"UPDATE produto 
-                        SET estoque = estoque - @Quantidade 
+        string sql = @"UPDATE produto
+                        SET estoque = estoque - @Quantidade
                         WHERE id = @Id AND estoque >= @Quantidade";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Quantidade", quantidade);
@@ -124,19 +118,17 @@ public class ProdutoRepository : IProdutoRepository
         cmd.ExecuteNonQuery();
     }
 
-    public void AtualizarFoto(int id, string? nomeArquivo)
+    // foto = null remove a foto do produto
+    public void AtualizarFoto(int id, string? foto)
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
-        using var cmd = new MySqlCommand(
-            "UPDATE produtos SET foto = @Foto WHERE id = @Id", conn);
 
-        cmd.Parameters.AddWithValue("@Foto",
-            (object?)nomeArquivo ?? DBNull.Value); // null → NULL no banco
+        string sql = "UPDATE produto SET foto = @Foto WHERE id = @Id";
+        using var cmd = new MySqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@Foto", (object?)foto ?? DBNull.Value);
         cmd.Parameters.AddWithValue("@Id", id);
+
         cmd.ExecuteNonQuery();
     }
-
-    
-
 }

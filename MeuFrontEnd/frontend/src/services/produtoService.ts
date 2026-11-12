@@ -1,4 +1,4 @@
-// src/services/produtoService.ts
+
 import api from './api'
 import { type Produto, type NovoProduto } from '../types/Produto'
 
@@ -15,35 +15,43 @@ export const ProdutoService = {
   },
 
   atualizar: async (id: number, p: NovoProduto): Promise<void> => {
-    await api.put(`/produto/${id}`, {id, ...p})
-
+    await api.put(`/produto/${id}`, { id, ...p })
   },
-  
+
   excluir: async (id: number): Promise<void> => {
     await api.delete(`/produto/${id}`)
   },
 
-  // Adicionar ao objeto produtoService existente:
+  // ENVIAR FOTO DO PRODUTO
 
-uploadFoto: async (id: number, arquivo: File): Promise<string> => {
+  uploadFoto: async (id: number, arquivo: File): Promise<string> => {
   const formData = new FormData()
-  formData.append('arquivo', arquivo) // nome = parâmetro do Controller
+
+  formData.append('arquivo', arquivo)
 
   const { data } = await api.post(
-    `/produtos/${id}/foto`,
+    `/produto/${id}/foto`,
     formData,
-    { headers: { 'Content-Type': 'multipart/form-data' } }
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
   )
-  return data.fotoBase64  // ← data URL retornada pelo backend
+
+  return data.fotoBase64
 },
 
-removerFoto: async (id: number): Promise<void> => {
-  await api.delete(`/produtos/${id}/foto`)
-},
 
-buscarPorId: async (id: number): Promise<Produto> => {
-  const { data } = await api.get('/produto/' + id)
-  return data
-},
+  // REMOVER FOTO
+  removerFoto: async (id: number): Promise<void> => {
+    await api.delete(`/produto/${id}/foto`)
+  },
+
+  // BUSCAR PRODUTO POR ID
+  buscarPorId: async (id: number): Promise<Produto> => {
+    const { data } = await api.get(`/produto/${id}`)
+    return data
+  }
 
 }

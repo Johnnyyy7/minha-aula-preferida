@@ -1,77 +1,108 @@
+
 import { useEffect, useState } from 'react'
 import { ProdutoService } from '../services/ProdutoService'
 import { type Produto } from '../types/Produto'
-import FotoUpload from '../components/produtos/FotoUpload'
-import { useParams } from 'react-router-dom'
 
 interface Props {
-  onProdutoCriado: () => void           // chamado depois de cadastrar OU salvar a edição
-  produtoEmEdicao: Produto | null       // null = formulário de cadastro
+  onProdutoCriado: () => void
+  produtoEmEdicao: Produto | null
   onCancelarEdicao: () => void
 }
 
-function ProdutoForm({ onProdutoCriado, produtoEmEdicao, onCancelarEdicao }: Props) {
-  const { id } = useParams()
-  const modoEdicao = !!id
+function ProdutoForm({
+  onProdutoCriado,
+  produtoEmEdicao,
+  onCancelarEdicao
+}: Props) {
+
   const [nome, setNome] = useState('')
   const [preco, setPreco] = useState('')
   const [estoque, setEstoque] = useState('')
+  const [foto, setFoto] = useState<File | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
-  const [fotoBase64Atual, setFotoBase64Atual] = useState<string | null>(null) // ✨ novo estado
-  // Quando clica em "Editar", preenche o formulário com os dados do produto.
-  // Quando cancela (ou termina), limpa os campos.
+
   useEffect(() => {
     if (produtoEmEdicao) {
       setNome(produtoEmEdicao.nome)
       setPreco(String(produtoEmEdicao.preco))
       setEstoque(String(produtoEmEdicao.estoque))
+      setPreview(produtoEmEdicao.fotoBase64 ?? null)
     } else {
       setNome('')
       setPreco('')
       setEstoque('')
+      setPreview(null)
     }
+
+    setFoto(null)
     setErro(null)
   }, [produtoEmEdicao])
 
-  async function carregarProduto() {
-  if (!id) return
-  const produto = await ProdutoService.buscarPorId(Number(id))
-  setNome(produto.nome)
-  setPreco(String(produto.preco))
-  setEstoque(String(produto.estoque))
-  // ✨ Guardar a data URL que veio da API:
-  setFotoBase64Atual(produto.fotoBase64 ?? null)
-}
+  function selecionarFoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const arquivo = e.target.files?.[0]
 
-  const handleSubmit = async (e: React.FormEvent) => {
+    if (!arquivo) return
+
+    if (!arquivo.type.startsWith('image/')) {
+      setErro('Selecione uma imagem válida.')
+      return
+    }
+
+    if (arquivo.size > 5 * 1024 * 1024) {
+      setErro('A imagem deve ter no máximo 5 MB.')
+      return
+    }
+
+    setErro(null)
+    setFoto(arquivo)
+    setPreview(URL.createObjectURL(arquivo))
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setErro(null)
+
     try {
       setLoading(true)
+
+      let produto: Produto
+
       if (produtoEmEdicao) {
-        // EDITAR: mantém o "ativo" que o produto já tinha
         await ProdutoService.atualizar(produtoEmEdicao.id, {
           nome,
           preco: Number(preco),
           estoque: Number(estoque),
           ativo: produtoEmEdicao.ativo
         })
+
+        produto = produtoEmEdicao
       } else {
-        // CADASTRAR
-        await ProdutoService.criar({
+        produto = await ProdutoService.criar({
           nome,
           preco: Number(preco),
           estoque: Number(estoque),
           ativo: true
         })
       }
+
+      // Envia a foto depois que o produto já possui ID.
+      if (foto) {
+        await ProdutoService.uploadFoto(produto.id, foto)
+      }
+
       setNome('')
       setPreco('')
       setEstoque('')
+      setFoto(null)
+      setPreview(null)
+
       onProdutoCriado()
-    } catch {
-      setErro('Erro ao salvar. Tente novamente.')
+
+    } catch (error) {
+      console.error(error)
+      setErro('Erro ao cadastrar produto ou enviar imagem.')
     } finally {
       setLoading(false)
     }
@@ -79,7 +110,10 @@ function ProdutoForm({ onProdutoCriado, produtoEmEdicao, onCancelarEdicao }: Pro
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>{produtoEmEdicao ? '✏️ Editar Produto' : '📝 Cadastrar Produto'}</h2>
+
+      <h2>
+        {produtoEmEdicao ? '✏️ Editar Produto' : '📝 Cadastrar Produto'}
+      </h2>
 
       {erro && <p className="mensagem-erro">{erro}</p>}
 
@@ -112,7 +146,6 @@ function ProdutoForm({ onProdutoCriado, produtoEmEdicao, onCancelarEdicao }: Pro
         <input
           id="estoque"
           type="number"
-          step="1"
           min="0"
           value={estoque}
           onChange={e => setEstoque(e.target.value)}
@@ -120,23 +153,61 @@ function ProdutoForm({ onProdutoCriado, produtoEmEdicao, onCancelarEdicao }: Pro
         />
       </div>
 
-      <div className="form-acoes">
-        <button type="submit" disabled={loading}>
-          {loading ? 'Salvando...' : produtoEmEdicao ? 'Salvar alterações' : 'Cadastrar'}
-          {modoEdicao && (
-          <FotoUpload produtoId={Number(id)}
-          fotoBase64Atual={fotoBase64Atual}
-          onAtualizar={carregarProduto}
+      {/* CAMPO PARA SELECIONAR FOTO */}
+      <div className="campo-foto">
+        <label htmlFor="foto">Foto do produto</label>
+
+        <input
+          id="foto"
+          type="file"
+          accept="image/*"
+          onChange={selecionarFoto}
+          disabled={loading}
         />
-    )}
+
+        {preview && (
+          <div style={{ marginTop: 10 }}>
+            <img
+              src={preview}
+              alt="Prévia do produto"
+              style={{
+                width: 100,
+                height: 100,
+                objectFit: 'cover',
+                borderRadius: 8
+              }}
+            />
+          </div>
+        )}
+
+        <small>Selecione uma imagem de até 5 MB.</small>
+      </div>
+
+      <div className="form-acoes">
+
+        <button type="submit" disabled={loading}>
+          {loading
+            ? 'Salvando...'
+            : produtoEmEdicao
+              ? 'Salvar alterações'
+              : 'Cadastrar'}
         </button>
+
         {produtoEmEdicao && (
-          <button type="button" className="botao-secundario" onClick={onCancelarEdicao}>
+          <button
+            type="button"
+            className="botao-secundario"
+            onClick={onCancelarEdicao}
+            disabled={loading}
+          >
             Cancelar
           </button>
         )}
+
       </div>
+
     </form>
   )
 }
+
 export default ProdutoForm

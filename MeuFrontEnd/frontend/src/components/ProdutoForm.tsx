@@ -1,5 +1,5 @@
-
 import { useEffect, useState } from 'react'
+import { isAxiosError } from 'axios'
 import { ProdutoService } from '../services/ProdutoService'
 import { type Produto } from '../types/Produto'
 
@@ -18,8 +18,10 @@ function ProdutoForm({
   const [nome, setNome] = useState('')
   const [preco, setPreco] = useState('')
   const [estoque, setEstoque] = useState('')
-  const [foto, setFoto] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
+  const [foto, setFoto] = useState<File | null>(null)          // arquivo escolhido agora
+  const [preview, setPreview] = useState<string | null>(null)  // prévia (foto nova ou a já salva)
+  const [removerFoto, setRemoverFoto] = useState(false)        // marcou "Remover foto"
+  const [inputKey, setInputKey] = useState(0)                  // muda para limpar o <input type="file">
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
 
@@ -29,6 +31,7 @@ function ProdutoForm({
       setPreco(String(produtoEmEdicao.preco))
       setEstoque(String(produtoEmEdicao.estoque))
       setPreview(produtoEmEdicao.fotoBase64 ?? null)
+      setErro(null)
     } else {
       setNome('')
       setPreco('')
@@ -37,7 +40,8 @@ function ProdutoForm({
     }
 
     setFoto(null)
-    setErro(null)
+    setRemoverFoto(false)
+    setInputKey(k => k + 1)
   }, [produtoEmEdicao])
 
   function selecionarFoto(e: React.ChangeEvent<HTMLInputElement>) {
@@ -45,19 +49,25 @@ function ProdutoForm({
 
     if (!arquivo) return
 
-    if (!arquivo.type.startsWith('image/')) {
-      setErro('Selecione uma imagem válida.')
+    // o backend só aceita estes formatos
+    const formatosPermitidos = ['image/jpeg', 'image/png', 'image/webp']
+    if (!formatosPermitidos.includes(arquivo.type)) {
+      setErro('Selecione uma imagem JPG, PNG ou WEBP.')
+      e.target.value = ''
       return
     }
 
+    // este limite tem que ser igual ao do backend (FotoService)
     if (arquivo.size > 5 * 1024 * 1024) {
       setErro('A imagem deve ter no máximo 5 MB.')
+      e.target.value = ''
       return
     }
 
     setErro(null)
     setFoto(arquivo)
     setPreview(URL.createObjectURL(arquivo))
+    setRemoverFoto(false)
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -87,9 +97,21 @@ function ProdutoForm({
         })
       }
 
-      // Envia a foto depois que o produto já possui ID.
-      if (foto) {
-        await ProdutoService.uploadFoto(produto.id, foto)
+      // Foto: o produto já tem ID, então envia a nova ou remove a atual.
+      // Fica num try separado: se só a foto falhar, o produto já foi salvo.
+      try {
+        if (foto) {
+          await ProdutoService.uploadFoto(produto.id, foto)
+        } else if (removerFoto && produtoEmEdicao) {
+          await ProdutoService.removerFoto(produto.id)
+        }
+      } catch (error) {
+        console.error(error)
+        const motivo =
+          isAxiosError(error) && typeof error.response?.data === 'string'
+            ? error.response.data
+            : 'tente de novo editando o produto.'
+        setErro('Produto salvo, mas a foto não foi enviada: ' + motivo)
       }
 
       setNome('')
@@ -97,12 +119,14 @@ function ProdutoForm({
       setEstoque('')
       setFoto(null)
       setPreview(null)
+      setRemoverFoto(false)
+      setInputKey(k => k + 1)
 
       onProdutoCriado()
 
     } catch (error) {
       console.error(error)
-      setErro('Erro ao cadastrar produto ou enviar imagem.')
+      setErro('Erro ao salvar o produto. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -158,15 +182,18 @@ function ProdutoForm({
         <label htmlFor="foto">Foto do produto</label>
 
         <input
+          key={inputKey}
           id="foto"
           type="file"
-          accept="image/*"
+          accept="image/png,image/jpeg,image/webp"
           onChange={selecionarFoto}
           disabled={loading}
         />
 
+        <small>Selecione uma imagem JPG, PNG ou WEBP de até 5 MB.</small>
+
         {preview && (
-          <div style={{ marginTop: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
             <img
               src={preview}
               alt="Prévia do produto"
@@ -177,10 +204,39 @@ function ProdutoForm({
                 borderRadius: 8
               }}
             />
+
+            {/* Só aparece ao editar, quando a prévia é a foto que já estava salva */}
+            {produtoEmEdicao && !foto && (
+              <button
+                type="button"
+                className="botao-secundario"
+                disabled={loading}
+                onClick={() => {
+                  setRemoverFoto(true)
+                  setPreview(null)
+                }}
+              >
+                Remover foto
+              </button>
+            )}
           </div>
         )}
 
-        <small>Selecione uma imagem de até 5 MB.</small>
+        {removerFoto && (
+          <p style={{ margin: '10px 0 0', fontSize: 13 }}>
+            A foto será removida quando você salvar.{' '}
+            <button
+              type="button"
+              className="botao-secundario"
+              onClick={() => {
+                setRemoverFoto(false)
+                setPreview(produtoEmEdicao?.fotoBase64 ?? null)
+              }}
+            >
+              Desfazer
+            </button>
+          </p>
+        )}
       </div>
 
       <div className="form-acoes">
